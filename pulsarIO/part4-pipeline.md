@@ -140,4 +140,6 @@ clusteraggregate output snapshot when terminated;
 1. [binary tree](https://en.wikipedia.org/wiki/Binary_tree)
 2. ROLLUP是数据汇总的一种形式，这详见：https://technet.microsoft.com/zh-cn/library/ms189305(v=sql.90).aspx
 
+-----------------
 
+[« 第四部分: 实时通道](part4-pipeline.md)　　　　[总结 »](concluding.md)

@@ -57,9 +57,3 @@ Pulsar-可扩展的实时分析系统
        - [用时序数据库汇总](part4-pipeline.md)
        - [Metrics存储](part4-pipeline.md) 
 - [总结](concluding.md)
-- [引用](references.md)
-
-
-
-
-

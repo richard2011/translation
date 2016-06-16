@@ -30,13 +30,14 @@ Session化是通过一个共同键来识别相关事件分组的状态管理流�
 ---------------------------
 聚合就是根据一组维度做汇总数据。关系型数据库或者PIG或者HIVE提供的聚合功能有COUNT，SUM，MIN，MAX，AVG，DISTINCT COUNT，TOP N，QUANTILES等。
 
-看一下在关系型数据库世界的语句：`select count(*) as METRIC1, column1, column2 from SOMETABLE group by column1, column2`。这语句在一个叫SOMETABLE的表来计算column1和column2的总数。
+看一下在关系型数据库世界的语句：`select count(*) as METRIC1, column1, column2 from SOMETABLE group by column1, column2` 。这语句在一个叫SOMETABLE的表来计算column1和column2的总数。
 
 这个查询运行在一个单独的数据库实例上，如果在共享环境，一个应用可能需要运行在每个分片上然后通过每个分片上的结果再进行聚合，如果被扫描的行数很大这个查询就会执行很长时间。
 
-现在考虑一下在实时流环境中相似的查询。事件中的维度代替列和事件流代替数据库表。在章节2.1我们提到电商系统通常每秒要处理数据百万条事件。跟数据库不同，实时数据流是持续地处理数据的，我们需要给持续处理的聚合功能提供一个开始时间和结束时间。我们的实现方式是每个聚合执行定义一个窗口[注1]，这个窗口是滚动窗口（`Tumbing widows`）或者旋转窗口(`Rolling windows`)。下面一个平常类SQL语句展示了使用数据流实现在时间窗口为10秒以D1和D2分组的汇总查询:
+现在考虑一下在实时流环境中相似的查询。事件中的维度代替列和事件流代替数据库表。在章节2.1我们提到电商系统通常每秒要处理数据百万条事件。跟数据库不同，实时数据流是持续地处理数据的，我们需要给持续处理的聚合功能提供一个开始时间和结束时间。我们的实现方式是每个聚合执行定义一个窗口[注1]，这个窗口是滚动窗口（`Tumbing widows`）或者旋转窗口(`Rolling windows`)。
+下面一个平常类SQL语句展示了使用数据流实现在时间窗口为10秒以D1和D2分组的汇总查询:
 
-create context MCContext start @now end pattern [timer:interval(10)]  
+create context MCContext start @now end pattern [timer:interval(10)]  
 
 context MCContext    
 insert into AGGREGATE select count(*) as METRIC1, D1, D2, FROM RAWSTREAM group by D1,D2 output snapshot wher terminated;     
@@ -93,12 +94,6 @@ select TopN(1000, 10, D1) as topItems from RawEvent();
 5. [Computing extremely accurate quantiles using T- Digest](https://github.com/tdunning/t- digest/blob/master/docs/t-digest-paper/histo.pdf)
 6. [directed acyclic graph (DAG)](https://en.wikipedia.org/wiki/Directed_acyclic_graph)
 
+-----------------
 
-
-
-
-
-
-
-
-
+[« 第一部分: 简介](part1-introduction.md)　　　　[第三部分: 架构 »](part3-architecture.md)
