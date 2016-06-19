@@ -13,7 +13,7 @@
 2.2 混合数据
 ----------------------
 用户行为数据流包括BOT和用户行为活动（user behavior activity）。我们终端用户只对用户行为活动感觉兴趣，这要求BOT活动事件能被够检测并过虑, 其他的场景只是处理BOT事件然后用户活动事件需要被过滤。
-I
+
 经常其他来源的数据而且非常有价值的信息需要与用户行为流结合，地理信息，设备标识，人口统计资料和某些片段等这些数据。挑战在于设计可伸缩的数据存储，查询速度也需要讨论。许多场景要求这种类型的数据，访问这些数据源对于独立应用服务来说是非常昂贵的，而更为有效的方法是提供能描述这个数据流的动态维度，这涉及到找一个使用在事件上单个维度作为键的存储。我们使用的策略是在处理节点做缓存或者使用一个快速查询的缓存。这个讨论必需基于数据改变的频率和数据的大小，这类似数据库的连接操作(`join`)
 
 2.3 Session化
@@ -91,7 +91,7 @@ select TopN(1000, 10, D1) as topItems from RawEvent();
 2. [一致性哈稀]()
 3. [journal]()
 4. [HyperLogLog: the analysis of a near-optimal cardinality estimation algorithm](http://algo.inria.fr/flajolet/Publications/FlFuGaMe0 7.pdf)
-5. [Computing extremely accurate quantiles using T- Digest](https://github.com/tdunning/t- digest/blob/master/docs/t-digest-paper/histo.pdf)
+5. [Computing extremely accurate quantiles using T- Digest](https://github.com/tdunning/t- digest/blob/master/docs/t-digest-paper/histo.pdf)
 6. [directed acyclic graph (DAG)](https://en.wikipedia.org/wiki/Directed_acyclic_graph)
 
 -----------------
