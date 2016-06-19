@@ -10,6 +10,8 @@ translations
 1. [Pulsar-可扩展的实时分析系统](pulsarIO/README.md)   
    该论文描述ebay如何基于CEP实现的流式计算平台和经验，干货多多。
 
+2. [Kafka架构设计](kaka-design/README.md)  
+   Kafka官方文档，Kafka入门必读，会保持最新。
 
 
 他山之石
