@@ -31,7 +31,7 @@
 微服务作为下一代软件设计革命不仅仅是因为技术原因。这个思想的词语微服务在我们首次探索（[Service Oriented Architecture (SOA)](https://en.wikipedia.org/wiki/Service-oriented_architecture)）已经出现。之前某技术确实限制了我们谈论微服务这个词,一个机器运行一个处理器，慢网络，昂贵
 的硬盘，昂贵的内存还有公司组织结构像巨无霸。但要指出的是在构建系统的过程中用单一职责原则去定义界限明确的组件这个并不是新方式。
 
-直至2016年，技术限制微服务的时代已经过去。网络更快，硬盘更便宜(而且很快)，内存更便宜，多核处理器更便宜还有云架构正在改变我们的设计和部署系统方式，现在我们终于可以按照我们想法去构建系统。
+直至2016年，技术限制微服务的时代已经过去。网络更快，硬盘更便宜（而且很快），内存更便宜，多核处理器更便宜还有云架构正在改变我们的设计和部署系统方式，现在我们终于可以按照我们想法去构建系统。
 
 设计和编写程序是有趣的，这就是为什么我们当中大部分人在最初的时候进入软件行业的原因。微服务不仅仅是一系列的原则和技术。这是一个解决系统设计中复杂问题更善解人意的一种方式。
 
@@ -74,6 +74,6 @@ Anne Thomas 已经在他的博客『SOA已死』描述得很清楚。
 
 [注1]. 译者注：monolithic 中文翻译纠结了好久，曾经想过单机版，庞然大物，集中式，最后译作巨无霸。     
 [注2]. 在这文档中微服务和服务两个概念是相通的。他们都指的是响应式服务。     
-[注3]. 『[SOA已死，服务永存)[http://apsblog.burtongroup.com/2009/01/soa-is-dead-long-live-services.html]』出自Anne Thomas, Gartner公司的副总裁和著名的分析师。    
+[注3]. 『[SOA已死，服务永存](http://apsblog.burtongroup.com/2009/01/soa-is-dead-long-live-services.html)』出自Anne Thomas, Gartner公司的副总裁和著名的分析师。    
 [注4].『响应式宣言』地址在www.reactivemanifesto.org。如你没有访问过，推荐你阅读一下因为这本书是依靠响应式原则作为基础。    
 [注5]. [Fault Tolerance in Tandem Computer Systems](http://www.hpl.hp.com/techreports/tandem/TR-86.2.pdf)
