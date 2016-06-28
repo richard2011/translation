@@ -9,10 +9,10 @@
 -----------------
 
 - [译序](#译序)
-- [第一部分：介绍](part1-introduction.md)
-    1. [解救服务化](part1-1-rescue-services.md)
-    2. [切分庞然大物](part1-2-slicing-the-monolith.md)
-    3. [SOA的新外衣?](part1-3-another-soa.md)
+- [第一部分：介绍](part1-introduction.md#介绍)
+    1. [拯救服务化](part1-introduction.md#拯救服务化)
+    2. [拆分巨无霸](part1-introduction.md#拆分巨无霸)
+    3. [SOA的新外衣?](part1-introduction.md#SOA的新外衣?)
 - [第二部分：什么是反应式微服务](part2-reactive-miroservice.md)
     1. [隔离](part2-1-isolation.md)
     2. [独立自治](part2-2-autonomously.md)
