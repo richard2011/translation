@@ -10,7 +10,7 @@ Reactive微服务是什么？
 *空间*    
     可以分布式和可移动的（可随意移动服务的能力） 
 
-		当我们实现微服务，它的本质就是消除共享易变状态（shared mutable state）[*注1*]从而使协调（coordination）、资源竞争、和一性成成本最小化，这些在非共享架构（[Shared nothing architecture](https://en.wikipedia.org/wiki/Shared_nothing_architecture)）中的通用可扩展性系统法则（Universal Scalability Law）[*注1*]有所定义。		
+当我们实现微服务，它的本质就是消除共享易变状态（shared mutable state）[*注1*]从而使协调（coordination）、资源竞争、和一性成成本最小化，这些在非共享架构（[Shared nothing architecture](https://en.wikipedia.org/wiki/Shared_nothing_architecture)）中的通用可扩展性系统法则（Universal Scalability Law）[*注1*]有所定义。		
 
 这个观点会贯穿全文，是时候让我们来讨论Reactive微服务最重要的部分了。
 
@@ -19,17 +19,17 @@ Reactive微服务是什么？
 
 > 没有伟大的孤独，哪有严肃的作品 ---  巴勃罗·毕加索
 
-隔离是非常重要的物质，它是微服务许多高层优势（`high-level benefits`）的基础，然后它同时是影响你的设计和架构的最大因素。它会（应该）拆分整个架构，因此一开始就要考虑它。它甚至会使你打破原来方式，重新组建团队和分配职责，正如梅尔文.康威（`Melvyn Conway`）的发现然后在1976年编写了[康威定律](http://melconway.com/Home/Conways_Law.html)：   
+隔离是非常重要的特质，它是微服务许多高层优势（`high-level benefits`）的基础，然后它同时是影响你的设计和架构的最大因素。它会（应该）分解整个架构，因此一开始就要考虑它。它甚至会使你打破原来方式，重新组建团队和分配职责，正如梅尔文.康威（`Melvyn Conway`）的发现，然后在1976年编写了[康威定律](http://melconway.com/Home/Conways_Law.html)：   
 
 > 任何组织设计一个系统（广义上的系统）都会产生一种设计，其结构为其组织通信结构的复本。 
 
 失败隔离，控制和管理工作流的服务失败防止雪崩 --- 这模式有时候会提到隔板这概念。
 
-隔板已经在般身结构设计运行好几个世纪了，例如这样的方式『建造水密舱，当船外壳被破坏或其他裂缝的情况可以控制进水情况』[*注3*]。般被分为截然不同、完全隔离的水密舱，裂缝不会扩散，般可以继续运行到达目的地。
+隔板已经在船身结构设计运行好几个世纪了，例如这样的方式『建造水密舱，当船外壳被破坏或其他裂缝的情况可以控制进水情况』[*注3*]。船身被分为截然不同、完全隔离的水密舱，裂缝不会扩散，般可以继续运行到达目的地。
 
 ![](images/Bulkheading.png)
 
-有人会认为泰坦尼克号就是个反例。实际上，有个有趣的研究[*注4*]表明了当你没有适当的隔离舱是如何导致雪崩，最后导致整个系统崩溃。泰坦尼克号确实是使用隔板技术，但是水密舱的墙壁假设水位不会超过开花板。所以当16分之6的水密舱被冰块刺穿，整艘般开始倾斜，水从一个水密舱溢出到另外一个，直到所有水密舱都充满了水然后下沉，1500死亡。
+有人会认为泰坦尼克号就是个反例。实际上，有个有趣的研究[*注4*]表明了当你没有适当的隔离舱是如何导致雪崩，最后导致整个系统崩溃。泰坦尼克号确实是使用隔板技术，但是水密舱的墙壁假设水位不会超过开花板。所以当十六分之六的水密舱被冰块刺穿，整艘般开始倾斜，水从一个水密舱溢出到另外一个，直到所有水密舱都充满了水然后下沉，1500死亡。
 
 恢复力，从失败中自愈的能力 -- 依靠地隔离和控制失败，达到这个目的只能是打破同步通信带来的强耦合。微服务在程序边界通过异步消息传递能实现间接调用，是捕获和管理失败的前提。针对平常的流程，使用服务监督（`service supervision`）[*注5*]。
 
@@ -39,14 +39,28 @@ Reactive微服务是什么？
 
 ![](images/BoundedContexts.png)
 
+自治性
+=========================
+
+> 要只按照你同时认为也能成为普遍规律的准则去行动 -- 康德自律法则
+
+隔离是自治的法则。只有当服务隔离了才会完全独立自治、行动独立、配合和协调其他问题。
+
+一个自治服务（[autonomous service](https://en.wikipedia.org/wiki/Service_autonomy_principle)）能够通过只保证（`promise`）[*注6*]拥有自己的行为，其他通过它的协议或API与其进行交互。拥抱这简单而又基本的事实，对我们如何理解与自主服务系统合作有深远的影响。
+
+自治性的另外方面是，服务只会保证它们自己的行为，然后它自己解决数据冲突或者当失败的时候能自己恢复，去除通信和协调的需求。
+
+使用自治性的服务可以使开辟了在服务编排的灵活性、流程管理和协同行为，同样可以水平扩展、高可用和运行时管理，定义清晰和可组成的API来通信（和维护一致性，这会有一点挑战，有时候我们会简短地讨论一下）。
+
 ----------------------------		
 [注1]. 一次对易变状态产生的问题的深入讨论，请看John Backus的经典图灵奖演讲『[编程可以从冯诺依曼风格中解放出来吗？](http://delivery.acm.org/10.1145/360000/359579/a1977-backus.pdf)』 
 
 [注2]. Neil Gunter的通用可扩展性系统法则（[Universal Scalability Law](http://www.perfdynamics.com/Manifesto/USLscalability.html)）是理解一致性和协调对并发和分布式系统的影响的重要途径。
 
-[注3]. 在般身结构运用隔板的讨论，请看WIKI页面[Bulkhead](https://en.wikipedia.org/wiki/Bulkhead_(partition))
+[注3]. 在船身结构运用隔板的讨论，请看WIKI页面[Bulkhead](https://en.wikipedia.org/wiki/Bulkhead_(partition))
 
 [注4]. 深度分析泰坦尼克号沉没的原因，请看[泰坦尼克号快速沉没的原因和影响](http://writing.engr.psu.edu/uer/bassett.html)
 
 [注5]. 单元（服务）监督在Actor语言（像Erlang）和类库（像Akka）用于管理失败。监督者层级模式以分层的方式在父进程监督下组织单元（Actor/服务），请看[监督与监控](http://doc.akka.io/docs/akka/snapshot/general/supervision.html)
 
+[注6]. 我们的定义来自于Mark Burgess（OReilly）的[Thinking in Promises](http://markburgess.org/TIpromises.html)中的章节『Promis Theory』，这个对于建立和理解集中式和协调系统很有用。它告诉我们,让我们拥抱不确定性,这样才能朝着更大的确定性。
