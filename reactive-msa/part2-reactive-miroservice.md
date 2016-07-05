@@ -37,7 +37,8 @@
 
 隔离还可以使服务之间更容易扩展，同样允许他们自监控、调试和独立测试（笨重的单体系统中的服务都缠在一起，这是很难道做到这一点的）。
 
-<img src="images/oBoundedContexts.png" width="50%" hspace="50%" />
+![](images/oBoundedContexts.png)
+
 
 自治性
 =========================
