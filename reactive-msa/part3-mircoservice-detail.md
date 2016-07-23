@@ -73,7 +73,7 @@ API管理
 
 这里的挑战包括协议和数据的版本，还有怎么样处理协议和数据的升级和降级。这是一个重要问题，包括可扩展的序列化，维护一个协议，数据转换层，有时候甚至服务本身版本长级*[注15]*，这在DDD中称为『[Anti-Corruption Layer](https://moffdub.wordpress.com/2008/09/21/anatomy-of-an-anti-corruption-layer-part-1/)』，可以加到服务自己本身或者在API GateWay完成。
 
-**假如我有这样一个客户端，为了执行一个任务，需要调用十个不同的服务，每个服务都有不同的API。听起来很复杂，我能如何简化API管理？*
+**假如我有这样一个客户端，为了执行一个任务，需要调用十个不同的服务，每个服务都有不同的API。听起来很复杂，我能如何简化API管理？**
 
 基于微服务的大型系统常常会遇到的场景，这会导致客户端增加不必要的复杂性。针对这些场景最好的方式是，不需要客户端直接与微服务通信，直接让它调用[API Gateway]()服务，请看图3-2
 
@@ -87,51 +87,53 @@ API Gateway负责接收客户端的请求，路由到正确的服务（如果需
 
 管理通信模式
 =====================
->
+> The Japanese have a small word - ma -for "that which is in between" - perhaps the nearest English equialent is "interstitial". The key in making great and grouwable systems is much more to design how its modules communicate rather than what their interal properties and hehaviors should be.  -- Alan key
 
 **我如何处理大规模系统地微服务之间能通信的复杂性？**
 
-ESB的角色仍然存在的价值，现在以一种现代可扩展性消息队列。
+ESB的角色仍然存在的价值，现在以一种现代的可扩展性的消息队列。
 
-系统中的少量微服务，直接P2P（[Point-to-Point]()）通信来完成这任务。无论如何，当你超越这个，允许他们当中每个直接和其他。是时间介绍一些约束了！这个需要一个在发送者和接收者之间逻辑解耦。
+系统中只有小数的微服务，直接P2P（[Point-to-Point]()）通信来完成这任务。然而当微服务数量超过这个，允许他们当中每个直接和其他通信，构架就会迅速变成一个喋喋不休的难以理解的架构， 是时间介绍一些约束的规则了！这个需要一个在发送者和接收者之间逻辑解耦，通过预定规则在各个部分路数据。
 
-其中一个解决方案是使用发布-订阅（[Publish-Subscribe]()）机制，发布者可以向一个Topic发布信息，订阅者监听这个Topic。这个可以使用一个可扩展的消息系统（例如Kafak  或者Amazon Kinesis）或者一个NOSQL数据（可以选择AP风格的数据库像Cassandra或Riak）。
+其中一个解决方案是使用发布-订阅（[Publish-Subscribe](http://www.enterpriseintegrationpatterns.com/patterns/messaging/PublishSubscribeChannel.html)）机制，发布者可以向一个Topic发布信息，订阅者监听这个Topic。这个可以使用一个可扩展的消息系统（例如Kafak  或者Amazon Kinesis）或者一个NOSQL数据（可以选择AP风格的数据库像Cassandra或Riak）。
 
-在SOA世界，这个角色通常由ESB来担任。无论如何，在这种情景我不用于桥接单体系统，但是相当于服务发布系统的支柱，用于广播工作或数据，或者像一个系统间整合和消息总线（例如通过[Spark Streaming]()摄取数据到[Spakrk]()）。
+在SOA世界，这个角色通常由ESB来担任。然而在这种情景我们不用于桥接单体系统，但是相当于服务发布系统的支柱，用于广播任务或数据，或者像系统间集成和通信总线（例如通过[Spark Streaming](http://spark.apache.org/streaming/)摄取数据到[Spakrk](http://spark.apache.org)）。
 
-有时候使用发布-订阅协议是不足够，例如，当你需要更增强的路由（[routing]()）能力，来允许程序员来自定义多个部分的路由规则，或被用于数据阶段（Stages）转换、充实、拆分和合并（例如，使用用[Akka Streams]()或者[Apache Camel]()）。请看图3-3
+有时候使用发布-订阅协议也有不足，例如，当你需要更高级的路由（[routing](http://www.enterpriseintegrationpatterns.com/patterns/messaging/MessageRoutingIntro.html)）能力，来允许程序员来自定义多个部分的路由规则，或被用于数据阶段（Stages）转换（`transformation`）、充实（`enrichment`）、拆分（`splitting`）和合并（`merging`）（例如，使用用[Akka Streams](http://doc.akka.io/docs/akka-stream-and-http-experimental/2.0.1/scala/stream-index.html)或者[Apache Camel](://camel.apache.org)）。请看图3-3
 
-![]()
+![](images/datastream.png)
 
 集成
 ===================
->
+> Nature laughs at the difficulties of integration. -- Pierre-Simon Laplace
 
 **如何集成多个系统？**
 
-大多数系统需要一个与外面的通信的方式，不管是消费和（或者）提供信息从（到）其他系统。
+大多数系统需要一个与外界的通信的方式，不管是消费和（或者）提供信息从（到）其他系统。
 
-当与一个外部的系统通信，特别是一个无法控制的系统，你把你自己处于危险的地步。你w从不能确定其他系统的行为，当通信从[happy path]()分发（当事情可以失败，当系统负载过高等等）。你甚至不能相信其他服务通过被证实的协议。所以你要知道家为什么采取预防措施来保证案例是非常重要的。
+当与一个外部的系统通信，特别是一个无法控制的系统，你把你自己处于危险的地步。当通信从[happy path](://en.wikipedia.org/wiki/Happy_path)分发（当事情可以失败，当系统负载过高等等），你永远都不能确定其他系统的行为。你甚至不能相信其他服务通过被证实的协议。所以你可以看到，为什么采取预防措施来保证安全是非常重要的。
 
-第一步定义一个能在系统高负载和不在期望增长的最小化危险的协议。如果使用同步协议（甚至只是协议的子集），你引入了紧耦合，然后你就无能为力，任由其他系统摆布。
+第一步，定义一个能在系统高负载或负载非正常增长时，只会产生的最小化危险的协议。如果使用同步协议（甚至只是协议的子集），你会引入了紧耦合，然后你就无能为力，任由其他系统摆布。
 
-避免级联系统要求服务完全解耦和隔离。最好的办法是使用一个全异步的通信协议。相当重要的是，这个协议有一个机制可以容纳大师的流程数据请求，这个称之为[back-pressure]()。这个保证一个快速系统不能由于它基本步分慢而引起负载过高。越来越多的工具和类库开始拥抱[Reative Streams]()规范（类响应式流的产品包括Akka Streams，[RxJava]()，Spark Streaming和Cassandra drivers）。这些使桥接系统使用全异步利用实时流变得可能（增强交互、可靠性和组合其他系统成一个整体）。
+避免级联失败，要求服务之间完全解耦和隔离。最好的办法是使用一个全异步的通信协议。相当重要的是，这个协议有一个机制可以容纳大量的流程数据请求，这个称之为[back-pressure](http://www.reactivemanifesto.org/glossary#Back-Pressure)。这个保证为个高性能系统不会因某个慢组件而引起负载过高。越来越多的工具和类库开始拥抱[Reative Streams](http://www.reactive-streams.org)规范（类响应式流的产品包括Akka Streams，[RxJava](https://github.com/ReactiveX/RxJava)，Spark Streaming和Cassandra drivers）。这些使桥接各个系统使用利用实时流来实现全异步得可能（增强交互、可靠性和组合其他系统成一个整体）。
 
-对于管理失败服务的方式同样至关重要。如果能捕捉错误，你可以重试。如果错误持续，在一个特定的周期里隔离这些服务，直到服务恢复，这个抽象的方式称为断路器模式（Circuit Breaker pattern，*[注17]*，生产环境级别的断路器实现可以参考[Netflix Hystrix]()和Akka）。请看图3-4。
+对于管理失败服务的方式同样至关重要。如果能捕捉错误，你可以重试。如果错误持续，在一个特定的周期里隔离这些服务，直到服务恢复，这个抽象的方式称为断路器模式（Circuit Breaker pattern，*[注17]*，生产环境级别的断路器实现可以参考[Netflix Hystrix](https://github.com/Netflix/Hystrix)和[Akka](http://doc.akka.io/docs/akka/snapshot/common/circuitbreaker.html)）。请看图3-4。
 
-在过去，集成的角色都是由文件系统承担，或者依赖集中式服务就像关系型数据库或者ESB。但随着扩展性、吞吐量和可用性的要求提高，很多系统都使用非中心化的策略来集成（例如，基于HTTP的REST和[ZeroMQ]()），或者现代的、集中式的、可扩展和弹性的发布-订阅系统（像Kafka和Amazon Kinesis）。
+![](images/CircuitBreaker.png)
 
-系统集成还包括最近流行的使用事件流平台，可以参考Fast Data]()和实时数据管理。
+在过去，集成的角色都是由密封文件（`flat files`）承担，或者依赖集中式服务就像关系型数据库或者ESB。但随着扩展性、吞吐量和可用性的要求提高，很多系统都使用非中心化的策略来集成（例如，基于HTTP的REST服务和[ZeroMQ](http://zeromq.org)），或者现代的、集中式的、可扩展和弹性的发布-订阅系统（像Kafka和Amazon Kinesis）。
+
+系统集成还包括最近流行的使用事件流平台，这个理念来自于Fast Data](http://lightbend.com/big-data-evolved)和实时数据管理。
 
 **客户端到服务的通信，同样需要异步吗？**
 
-能过这本书，我们已经强调需要异步通信、异步执行和异步IO。在服务之间依靠异步消息传递通信相当简单，因为需要全部控制通信协议和实现。但是当外部客户端我们通常不用那么奢华，很多客户端，像浏览器、应用等都是同步通信，在这种情景使用REST通常是一个很好的选择。
+通过这本书，我们已经强调需要异步通信、异步执行和异步IO。在服务之间依靠异步消息传递通信相当简单，因为需要全部控制通信协议和实现。但是当外部客户端我们通常不用那么奢华，很多客户端，像浏览器、应用等都是同步通信，在这种情景使用REST通常是个很好的选择。
 
-重要的不要全部使用同步客户端通信，而应该考虑清楚，然后每个客户端使用单一场景*[注18]*。有很多场景开发人员还是倾向于使用同步的解决方案，应该当真的有需要的时候才使用，例如简单的事情或者更好的交互。
+特别要指出的是，不要全部使用同步客户端通信，而是应该单独地考虑和估算每个客户端用户场景*[注18]*。有很多场景开发人员还是习惯于使用同步的方案，而不是真的有需要，因为简化工作或者更好的交互。
 
-内在的异步但是传统却把它当作同步的场景包括：库存信息（如果它很热销，库存减小很快用户通常需要被通知）；餐馆里的当前菜单（如果它们改变，用户可能想马上知道）；网站的评论（通常是评论完实时显示）；还有广告（马上回应或才根据用户的情况改变）。
+有些场景天生的异步但是传统却把它当作同步，包括：库存信息（如果它很热销，库存减小得很快，用户通常需要被通知）；餐馆里的当前菜单（如果它们改变，用户可能想马上知道）；网站的评论（通常是评论完实时显示）；还有广告（马上回应或根据用户如何使用这网页而改变）。
 
-我们需要独立地看待每个用户场景，搞清楚客户端与服务之间用什么方式来是自然。这通常要求分析数据完整性约束，找机会去弱化一致性（有序）的约束（可以利用因果关系和读-你的-写*[注19]*），目的是找到用户行为最小化的协调语义：找到贴近现实的最好策略。
+我们需要独立地看待每个用户场景，搞清楚客户端与服务之间用什么方式来是自然。这通常要求分析数据完整性约束，找机会去弱化一致性（有序）的约束（可以利用因果关系和read-your-writes*[注19]*），目的是寻找协调约束的最小集合，为用户提供直观的语义：找到利用现实的最好策略。
 
 安全管理
 =========
@@ -248,3 +250,10 @@ ACID 2.0这个概念由Pat Helland提出，他还总结一系列可扩展性的�
 [注15]. 与现有服务的版本相对，这是一个区别服务的全新语意。
 
 [注16]. API Gateway模型已经在[Netflix](http://techblog.netflix.com/2013/01/optimizing-netflix-api.html)和[Amazon](https://aws.amazon.com/api-gateway)成功运用。
+
+[注17]. 断路器模式在基于微服务的系统是非常重要的。更多请阅读Martin Fowler的『[CircuitBreaker](http://martinfowler.com/bliki/CircuitBreaker.html)』
+
+[注18]. 定义评估用例的过程已超出了本文的范围。
+
+[注19]. 最终一致性的客户端不同语意的非常好的讨论，包括read-your-writes一致性和因果一致性，具体可以查看Werner Vogels（CTO - Amazon.com）的[Eventually Consistent - Revisited](http://www.allthingsdistributed.com/2008/12/eventually_consistent.html)
+
