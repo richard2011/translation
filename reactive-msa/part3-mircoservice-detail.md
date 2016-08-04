@@ -14,10 +14,11 @@
 
 单机版的微服务很容易设计和实现，基于微服务架构难点在于如何把它们串连起来：服务发现、协调、安全、复制、数据一致性、故障转移、部署、与其他系统集成，这些只是其中的一些。
 
-系统需要利用现实
+利用现实
 =================
 
-> If you cannot solve a problem without programming. You cannot solve a problem with programming.  --Klang’s Conjecture by Viktor Klang 
+> If you cannot solve a problem without programming. You cannot solve a problem with programming.     
+> -- Klang’s Conjecture by Viktor Klang 
 
 基于微服务架构的优点之一就是给你提供一系列的工具来利用现实，通过模仿世界是如何工作来构建系统，包括所有的约束和因素。
 
@@ -31,9 +32,9 @@
 
 ![](images/consistency.png)
 
-然而，只要我们离开单个微服务的限界就会进入广阔的『不确定』海洋（分布式的世界，与众不同的世界）。你可能已经听说过构建分布式系统是困难的*[注4]*。是的，正如前所言，同样有一个世界提供了我们可回复性、弹性、隔离的解决方案。从这点来看，我们不能回到单体系统，而是学习如何正确地运用一些原则 、抽象和管理工具。
+然而，只要我们离开单个微服务的限界就会进入广阔的『不确定性』海洋（分布式的世界，与众不同的世界）。你可能已经听说过构建分布式系统是困难的*[注4]*。是的，正如前所言，同样有一个世界提供了我们可回复性、弹性、隔离的解决方案。从这点来看，我们不能回到单体系统，而是学习如何正确地运用一些原则 、抽象和管理工具。
 
-Pat Helland谈论过这个*[注5]*，他用『内部数据』和『外部数据』的对比来说明这点，内部数据是『我们当前本地表现』，外部数据（事件）是『过去的回忆』，然而服务之间的命令是『将来的希望』。
+Pat Helland谈论过这个*[注5]*，他用『内部数据』和『外部数据』的对比来说明这点，内部数据是『当前本地表现』，外部数据（事件）是『对过去的回忆』，而服务之间的命令是『对将来的期望』。
 
 > 过渡到面向服务构架夺最大挑战之一就是令到程序员明白他们已经别无选择，只能明白在外部，『当时』数据是来自其他服务，『现在』在服务内部。     
 --- Pat Helland
@@ -50,10 +51,10 @@ Pat Helland谈论过这个*[注5]*，他用『内部数据』和『外部数据�
 
 为了和其他服务通信，一个服务需要知道其他服务的地址。最简单的方法是所有用到的服务硬编码物理地址和端口，或者在启动的时候把它们写到配置文件。这个解决方案的问题是它会形成一个静态发布模型，这个模型与我们达成微服务的一切事情相矛盾。
 
-服务之间需解耦和可移动性，系统需要弹性和动态的，这可以通过增加一个中间层来解决，这个模式称之为控制反转（[Inversion of Controller, Ioc](https://en.wikipedia.org/wiki/Inversion_of_control)）。这意味着每个服务实际上应该上报当前地址和连接信息给平台。这称之为服务发现（[Service Discovery](https://www.nginx.com/blog/service-discovery-in-a-microservices-architecture/)）
+服务之间需解耦和可移动性（`mobile`），系统需要弹性和动态的，这可以通过增加一个中间层来解决，这个模式称之为控制反转（[Inversion of Controller, Ioc](https://en.wikipedia.org/wiki/Inversion_of_control)）。这意味着每个服务实际上应该上报当前地址和连接信息给平台。这称之为服务发现（[Service Discovery](https://www.nginx.com/blog/service-discovery-in-a-microservices-architecture/)）
 ，这也是基于微服务平台的基本部分。
 
-一旦服务的信息已经被持久化，就可以通过一个服务注册（[Service Registry](http://microservices.io/patterns/service-registry.html)）查找到信息，这种模式称为客户端-服务发现（[Client-Side Service Disacovery](http://microservices.io/patterns/client-side-discovery.html)）。另外一个策略需要信息存储和在一个负载均衡器（`load balancer`，像在AWS弹性负载均衡器）或者直接在服务地址引用 （使用依赖注入的方式注入），这种模式称为服务端-服务发现。
+一旦服务的信息已经被持久化，就可以通过一个服务注册（[Service Registry](http://microservices.io/patterns/service-registry.html)）查找到信息，这种模式称为客户端-服务发现（[Client-Side Service Disacovery](http://microservices.io/patterns/client-side-discovery.html)）。另外一个策略需要信息存储和在一个负载均衡器（`load balancer`，像在[AWS Elastic Load Balancer }(https://aws.amazon.com/elasticloadbalancing/)）或者直接在服务地址引用 （使用依赖注入的方式注入），这种模式称为服务端-服务发现。
 
 **当我们选择一个服务发现的工具的时候，主要考虑哪些因素？**
 
@@ -65,17 +66,17 @@ API管理
 =========================
 > 发送时保守，接收时开放。 --- Jon Postel
 
-**当微服务随着时间独立地进化，管理服务协议和API有什么挑战？**
+**当微服务随着时间独立升级，管理服务协议和API有什么挑战？**
 
-单个微服务只有当他们能够独立进化的时候才能互相独立和解耦。这个要求他们的数据和[[协议](http://www.reactivemanifesto.org/glossary#Protocol)能够弹性的和随意改变（对于持续存储数据和交换临时信息*[注12]*）。实际上，不同版本之间的协作是决定着是否能够长期管理复杂服务。
+单个微服务只有当他们能够独立升级才能互相独立和解耦。这个要求它们数据和[协议](http://www.reactivemanifesto.org/glossary#Protocol)能够有回复性（`resilient`）的和随意改变（例如，持久存储的数据和广义的临时信息*[注12]*）。实际上，不同版本之间的协作，决定着是否能够长效管理复杂的服务规划。
 
-伯斯塔尔法则*[注13]*，也称为鲁棒性原则，描述如下『发送时保守，接收时开放。』，对于API设计和协同服务都是一个很好的指导*[注14]*。
+伯斯塔尔法则*[注13]*，也称为鲁棒性原则，描述如下『发送时保守，接收时开放』，对于服务协作中的API设计和升级都是一个很好的指导*[注14]*。
 
-这里的挑战包括协议和数据的版本，还有怎么样处理协议和数据的升级和降级。这是一个重要问题，包括可扩展的序列化，维护一个协议，数据转换层，有时候甚至服务本身版本长级*[注15]*，这在DDD中称为『[Anti-Corruption Layer](https://moffdub.wordpress.com/2008/09/21/anatomy-of-an-anti-corruption-layer-part-1/)』，可以加到服务自己本身或者在API GateWay完成。
+这里的挑战包括协议和数据的版本，还有如何处理协议和数据的升级和降级。这是一个涉及面较大的问题，包括可扩展的序列化编码、协议维护、数据转换层，有时候甚至这个服务本身版本升级*[注15]*，这在DDD中称为『反腐化层，[Anti-Corruption Layer](https://moffdub.wordpress.com/2008/09/21/anatomy-of-an-anti-corruption-layer-part-1/)』，可以追加到服务自己本身或者在API GateWay完成。
 
 **假如我有这样一个客户端，为了执行一个任务，需要调用十个不同的服务，每个服务都有不同的API。听起来很复杂，我能如何简化API管理？**
 
-基于微服务的大型系统常常会遇到的场景，这会导致客户端增加不必要的复杂性。针对这些场景最好的方式是，不需要客户端直接与微服务通信，直接让它调用[API Gateway]()服务，请看图3-2
+基于微服务的大型系统常常会遇到的场景，这会导致客户端增加不必要的复杂性。针对这些场景最好的方式是，不需要客户端直接与微服务通信，直接让它调用[API Gateway](https://www.nginx.com/blog/building-microservices-using-an-api-gateway)服务[*注16*]，请看图3-2
 
 ![](images/gateway.png)
 
@@ -83,21 +84,21 @@ API Gateway负责接收客户端的请求，路由到正确的服务（如果需
 
 这模式的优势在于，通过封装服务的内部结构和它们的API，来简化客户端到服务的协议。如果使用一个集中式的方案很难做到高可用和可扩展性的。可以使用非中心化的技术来代替，正如之前提及的服务发现。
 
-但这个就像所有核心基础服务一样，不应该开发者自己构建，理想的情况是作为底层平台的一部分。
+但是，这个就像所有核心基础服务一样，不应该开发者自己构建，理想的情况是作为底层平台的一部分。
 
-管理通信模式
+通信模式管理
 =====================
 > The Japanese have a small word - ma -for "that which is in between" - perhaps the nearest English equialent is "interstitial". The key in making great and grouwable systems is much more to design how its modules communicate rather than what their interal properties and hehaviors should be.  -- Alan key
 
-**我如何处理大规模系统地微服务之间能通信的复杂性？**
+**我如何处理大量微服务之间能通信的高复杂度？**
 
-ESB的角色仍然存在的价值，现在以一种现代的可扩展性的消息队列。
+ESB的角色仍然存在的价值，只是现在以一种现代的可扩展性的消息队列。
 
-系统中只有小数的微服务，直接P2P（[Point-to-Point]()）通信来完成这任务。然而当微服务数量超过这个，允许他们当中每个直接和其他通信，构架就会迅速变成一个喋喋不休的难以理解的架构， 是时间介绍一些约束的规则了！这个需要一个在发送者和接收者之间逻辑解耦，通过预定规则在各个部分路数据。
+如果系统中只有小量的微服务，可以直接P2P（[Point-to-Point](http://www.enterpriseintegrationpatterns.com/PointToPointChannel.html)）通信来完成这任务。然而当微服务数量较大，允许他们当中每个直接和其他通信，构架就会迅速变得难以理解和混乱。 是时候介绍一些约束的规则了！这个需要一个在发送者和接收者之间逻辑解耦，通过预定规则在各给组件之间路由数据。
 
 其中一个解决方案是使用发布-订阅（[Publish-Subscribe](http://www.enterpriseintegrationpatterns.com/patterns/messaging/PublishSubscribeChannel.html)）机制，发布者可以向一个Topic发布信息，订阅者监听这个Topic。这个可以使用一个可扩展的消息系统（例如Kafak  或者Amazon Kinesis）或者一个NOSQL数据（可以选择AP风格的数据库像Cassandra或Riak）。
 
-在SOA世界，这个角色通常由ESB来担任。然而在这种情景我们不用于桥接单体系统，但是相当于服务发布系统的支柱，用于广播任务或数据，或者像系统间集成和通信总线（例如通过[Spark Streaming](http://spark.apache.org/streaming/)摄取数据到[Spakrk](http://spark.apache.org)）。
+在SOA世界，这个角色通常由ESB来担任。然而在这种情景我们不再用于单体系统的桥接，而是相当于服务发布系统（`publishing system`）的支柱，用于广播任务或数据，或者系统间集成和通信总线（例如通过[Spark Streaming](http://spark.apache.org/streaming/)摄取数据到[Spakrk](http://spark.apache.org)）。
 
 有时候使用发布-订阅协议也有不足，例如，当你需要更高级的路由（[routing](http://www.enterpriseintegrationpatterns.com/patterns/messaging/MessageRoutingIntro.html)）能力，来允许程序员来自定义多个部分的路由规则，或被用于数据阶段（Stages）转换（`transformation`）、充实（`enrichment`）、拆分（`splitting`）和合并（`merging`）（例如，使用用[Akka Streams](http://doc.akka.io/docs/akka-stream-and-http-experimental/2.0.1/scala/stream-index.html)或者[Apache Camel](://camel.apache.org)）。请看图3-3
 
@@ -109,7 +110,7 @@ ESB的角色仍然存在的价值，现在以一种现代的可扩展性的消�
 
 **如何集成多个系统？**
 
-大多数系统需要一个与外界的通信的方式，不管是消费和（或者）提供信息从（到）其他系统。
+大多数系统需要一个与外界的通信的方式，不管是消费和（或者生产）信息从（到）其他系统。
 
 当与一个外部的系统通信，特别是一个无法控制的系统，你把你自己处于危险的地步。当通信从[happy path](://en.wikipedia.org/wiki/Happy_path)分发（当事情可以失败，当系统负载过高等等），你永远都不能确定其他系统的行为。你甚至不能相信其他服务通过被证实的协议。所以你可以看到，为什么采取预防措施来保证安全是非常重要的。
 
@@ -117,13 +118,13 @@ ESB的角色仍然存在的价值，现在以一种现代的可扩展性的消�
 
 避免级联失败，要求服务之间完全解耦和隔离。最好的办法是使用一个全异步的通信协议。相当重要的是，这个协议有一个机制可以容纳大量的流程数据请求，这个称之为[back-pressure](http://www.reactivemanifesto.org/glossary#Back-Pressure)。这个保证为个高性能系统不会因某个慢组件而引起负载过高。越来越多的工具和类库开始拥抱[Reative Streams](http://www.reactive-streams.org)规范（类响应式流的产品包括Akka Streams，[RxJava](https://github.com/ReactiveX/RxJava)，Spark Streaming和Cassandra drivers）。这些使桥接各个系统使用利用实时流来实现全异步得可能（增强交互、可靠性和组合其他系统成一个整体）。
 
-对于管理失败服务的方式同样至关重要。如果能捕捉错误，你可以重试。如果错误持续，在一个特定的周期里隔离这些服务，直到服务恢复，这个抽象的方式称为断路器模式（Circuit Breaker pattern，*[注17]*，生产环境级别的断路器实现可以参考[Netflix Hystrix](https://github.com/Netflix/Hystrix)和[Akka](http://doc.akka.io/docs/akka/snapshot/common/circuitbreaker.html)）。请看图3-4。
+对于管理失败服务的方式同样至关重要。如果能捕捉错误，你可以重试。如果错误持续，在一个特定的周期里隔离这些服务，直到服务恢复，这个抽象的方式称为断路器模式（Circuit Breaker pattern*[注17]*，生产环境级别的断路器实现可以参考[Netflix Hystrix](https://github.com/Netflix/Hystrix)和[Akka](http://doc.akka.io/docs/akka/snapshot/common/circuitbreaker.html)）。请看图3-4。
 
 ![](images/CircuitBreaker.png)
 
-在过去，集成的角色都是由密封文件（`flat files`）承担，或者依赖集中式服务就像关系型数据库或者ESB。但随着扩展性、吞吐量和可用性的要求提高，很多系统都使用非中心化的策略来集成（例如，基于HTTP的REST服务和[ZeroMQ](http://zeromq.org)），或者现代的、集中式的、可扩展和弹性的发布-订阅系统（像Kafka和Amazon Kinesis）。
+在过去，集成的角色都是由平面文件（`flat files`，译者注：这些无格式文件可以在文本编辑器中查看，通常会使用这些文件向数据库中加载数据。）承担，或者依赖集中式服务就像关系型数据库或者ESB。但随着扩展性、吞吐量和可用性的要求提高，很多系统都使用非中心化的策略来集成（例如，基于HTTP的REST服务和[ZeroMQ](http://zeromq.org)），或者现代的、集中式的、可扩展和弹性的发布-订阅系统（像Kafka和Amazon Kinesis）。
 
-系统集成还包括最近流行的使用事件流平台，这个理念来自于Fast Data](http://lightbend.com/big-data-evolved)和实时数据管理。
+系统集成还包括最近流行的使用事件流平台，这个理念来自于[Fast Data](http://lightbend.com/big-data-evolved)和实时数据管理。
 
 **客户端到服务的通信，同样需要异步吗？**
 
@@ -133,7 +134,7 @@ ESB的角色仍然存在的价值，现在以一种现代的可扩展性的消�
 
 有些场景天生的异步但是传统却把它当作同步，包括：库存信息（如果它很热销，库存减小得很快，用户通常需要被通知）；餐馆里的当前菜单（如果它们改变，用户可能想马上知道）；网站的评论（通常是评论完实时显示）；还有广告（马上回应或根据用户如何使用这网页而改变）。
 
-我们需要独立地看待每个用户场景，搞清楚客户端与服务之间用什么方式来是自然。这通常要求分析数据完整性约束，找机会去弱化一致性（有序）的约束（可以利用因果关系和read-your-writes*[注19]*），目的是寻找协调约束的最小集合，为用户提供直观的语义：找到利用现实的最好策略。
+我们需要独立地看待每个用户场景，搞清楚客户端与服务之间用什么方式调用是自然。这通常要求分析数据完整性约束，找机会去弱化一致性（有序）的约束（可以利用因果关系和读已所写*[注19]*），目的是寻找协调约束的最小集合，为用户提供直观的语义：找到利用现实的最好策略。
 
 安全管理
 =========
@@ -167,7 +168,7 @@ TSL客户端认证（[TLS Client Certificates](https://en.wikipedia.org/wiki/Tra
 
 **我怎么样设计微服务来保证状态协调最小化？**
 
-在传统中，开发者已经使用一个单体架构连接一个SQL数据库，提供一个『全局』的一致性。这个模型很简单是因为它提供了一个『全局』的一致性的『现在』，一个绝对呈现（这个就很直观的原因）。但是就像我们讨论那样，打破这种幻想和分解单体系统，被隔离的微服务有很多好处。
+在传统中，开发者已经使用一个单体架构连接一个SQL数据库，提供一个『全局』的一致性。这个模型很简单是因为它提供了一个『全局』的一致性的『现在』，一个绝对呈现（这个就很直观的原因）。但是就像我们讨论那样，打破这种假设和分解单体系统，被隔离的微服务有很多好处。
 
 你需要开始研究数据然后把它作为一个域来梳理它们的关系，保证和业务完整约束，利用现实(`exploiting reality`)。
 
@@ -199,7 +200,7 @@ ACID 2.0[*注22*]这个概念由Pat Helland提出，他还总结一系列可扩�
 
 拥抱这个理念的工具是CRDTs，正如它们都是最终一致，丰富的数据结构（包括count,sets,map和even graphs）组合，汇聚不需要协调。更新操作与顺序无关，通常还可以安全地自动合并。CRDTs相当新，但是已经在生产环境实践了好几年，有一些生产环境级别的类库你可以直接使用（例如，Akka和Riak）。
 
-然而，最终一致性有时候是不能做到的，因为它会要求我们放弃很多高层业务语意（`high-level business semantics`）。如果遇到这场景选择因果一致性（[causal consistency](https://en.wikipedia.org/wiki/Causal_consistency)）会是一个很好的权衡。这语意基于人们期望和简单直接的因果关系。好消息是，因果一致性已包含了可扩展性和可用性（甚至还被证实是实现高可用系统的最好方式*[注23]*）。因果一致性通常使用逻辑时刻（`logical time`*[注24]*），也常用于许多NoSQL数据、事件日志存储和分布式日事件流产品（例如Riak和[Red Bull Eventuate](https://rbmhtechnology.github.io/eventuate/)）。
+然而，最终一致性有时候是很难实现的，因为它会要求我们放弃很多高层业务语意（`high-level business semantics`）。如果遇到这场景选择因果一致性（[causal consistency](https://en.wikipedia.org/wiki/Causal_consistency)）会是一个很好的权衡。这语意基于人们期望和简单直接的因果关系。好消息是，因果一致性已包含了可扩展性和可用性（甚至还被证实是实现高可用系统的最好方式*[注23]*）。因果一致性通常使用逻辑时刻（`logical time`*[注24]*），也常用于许多NoSQL数据、事件日志存储和分布式日事件流产品（例如Riak和[Red Bull Eventuate](https://rbmhtechnology.github.io/eventuate/)）。
 
 但对于关系型数据库呢？实际上你同样可以漂亮地使用SQL。在他其中一篇论文*[注25]*，Peter Bailis谈论了在怎么样避免在关系型数据库进行协调，列举很多可以避免协调更改的参考SQL操作（例如，不使用事务）。这些操作包括：等于，唯一ID生成，自增，自减，外键插入和删除，二级索引和视图。
 
@@ -220,21 +221,21 @@ ACID 2.0[*注22*]这个概念由Pat Helland提出，他还总结一系列可扩�
 
 [注2]. 事实上，信息是延迟的，光速表现一个难以（或者有时候令人沮丧的）达到它的最大值。显而易见的事实是构建网络系统，或者打一个跨越大西洋的VOIP电话。
 
-[注3]. 为了讨论时间的相对性，分布式系统里的现在和过去。我们需要如何改变我们的模型系统，这样我们可以摆脱我们正生活在一个全球一致的幻想。请观看我们的演讲『[“Life Beyond the Illusion of Present”](https://www.youtube.com/watch?v=Nhz5jMXS8gE)』，YouTue视频，53:54，在2016年3月6日举行的Voxxed Days。你可能同样读过Justin Sheehy的文章中谈论的主题『(There is No Now)[https://queue.acm.org/detail.cfm?id=2745385]』
+[注3]. 为了讨论时间的相对性，分布式系统里的现在和过去。我们需要如何改变我们的模型系统，这样我们可以摆脱我们正生活在一个全球一致的幻想。请观看我们的演讲『[“Life Beyond the Illusion of Present”](https://www.youtube.com/watch?v=Nhz5jMXS8gE)』，YouTue视频，53:54，在2016年3月6日举行的Voxxed Days。你可能同样读过Justin Sheehy的文章中谈论的主题『[There is No Now](https://queue.acm.org/detail.cfm?id=2745385)』
 
 [注4]. 如果你没有亲身经历过，我建议你花一些时间来思考L Perter Deutsch的『[分布式计算的谬论](https://en.wikipedia.org/wiki/Fallacies_of_distributed_computing)』的内在含意。
 
 [注5]. Pat Helland的论文『[内部数据与外部数据对比](http://www.cidrdb.org/cidr2005/papers/P12.pdf)』对构建基于微服务的系统是很有意义的。
 
-[注6]. 在CAP理论里，CP指的是一致性和分区容忍性，意味一个系统选择一致性放弃可用性，来就对网络分区。
+[注6]. 在CAP理论里，CP指的是一致性和分区容忍性，意味着在发生网络分区的情况，选择一致性，放弃可用性。
 
 [注7]. 基于CP的服务发现系统的例子，包括[ZooKeeper](https://zookeeper.apache.org)和[etcd](https://github.com/coreos/etcd)
 
-[注8]. 在你『知道』服务的位置在毫微秒的时间里，本地可能会改变。所以从『强』一致性得到什么？
+[注8]. 在你『知道』服务的位置在纳秒的时间里，本地可能会改变。所以这样的『强』一致性信息有用吗？
 
-[注9]. 在CAP理论里，AP指高可用和分区容忍性。意味着选择高可用，放弃一致性。来面对网络分区。
+[注9]. 在CAP理论里，AP指高可用和分区容忍性。意味着在发生网络分区的情况下，选择可用性，放弃一致性。
 
-[注10]. CRDTs是近年来分布系统研究最引人注意理念之一，提供我们丰富，最终一致性，组成数据，不需要通过协调来保证收敛一致性。更多信息请看『[收敛和可交换复制数据类型的综合研究](https://hal.inria.fr/inria-00555588/document)』
+[注10]. CRDTs是近年来分布系统研究最引人注意理念之一，提供我们丰富，最终一致性，组成数据，不需要通过协调来保证收敛一致性。更多信息请看『[收敛和可交换多副本数据类型的综合研究](https://hal.inria.fr/inria-00555588/document)』
 
 [注11]. 基于AP服务发现系统包括[Lightbend响应系统](http://www.lightbend.com/products/lightbend-reactive-platform)，[Netflix Eureka](https://github.com/Netflix/eureka)，[Serf](https://www.serfdom.io)和[regular DNS](https://en.wikipedia.org/wiki/Domain_Name_System)
 
@@ -244,7 +245,7 @@ ACID 2.0[*注22*]这个概念由Pat Helland提出，他还总结一系列可扩�
 
 [注14]. 同样影响着[Tolerant Reader](http://martinfowler.com/bliki/TolerantReader.html)模式。
 
-[注15]. 与现有服务的版本相对，这是一个区别服务的全新语意。
+[注15]. 与升级现有服务的版本相比，这是一个区别服务的全新语意。
 
 [注16]. API Gateway模型已经在[Netflix](http://techblog.netflix.com/2013/01/optimizing-netflix-api.html)和[Amazon](https://aws.amazon.com/api-gateway)成功运用。
 
