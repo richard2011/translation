@@ -2,7 +2,7 @@
 
 译序
 -----------------
-"reactive mircoservices architecture"反应式微服务构架由scala背后的公司编写，主要的技术有CQRS，DDD，EventSouring，Actor(Akka)等,我觉得可以作为我们轩辕的终极参考材料。
+响应式微服务构架（`reactive mircoservices architecture`）由scala背后的公司编写，主要的技术有CQRS，DDD，EventSouring，Actor(Akka)等,我觉得可以作为我们轩辕的终极参考材料。
 
 
 目录
@@ -20,7 +20,7 @@
     3. [不共享状态](part2-reactive-miroservice.md#不共享状态)
     4. [异步信息通信](part2-reactive-miroservice.md#异步信息通信)
     5. [位置透明](part2-reactive-miroservice.md#位置透明)
-- [第三部分：反应式微服实现](part3-mircoservice-detail.md)
+- [第三部分：响应式微服实现](part3-mircoservice-detail.md)
     1. [利用现实](part3-mircoservice-detail.md#利用现实)
     2. [服务发现](part3-mircoservice-detail.md#服务发现)
     3. [API管理](part3-mircoservice-detail.md#API管理)
