@@ -148,7 +148,7 @@ ESB的角色仍然存在的价值，只是现在以一种现代的可扩展性�
 
 TSL客户端认证（[TLS Client Certificates](https://en.wikipedia.org/wiki/Transport_Layer_Security)），也称为共同认证或者双向认证，可以为内部服务认证提供一个很坚实的安全解决方案，这个方案就是部署的时候为服务提供一个私有的Key和证书。在这策略，不仅服务器需要验证客户端的身份，客户端也需要验证服务器身份。这意味这策略是安全，不仅仅防止窃听，也可以预防一个不友善的网络攻击来网络拦截和重定向请求（例如网络本身，请看图3-5）。SSL通信可以防止窃听、开放的、易于理解的标准，但是管理复杂，优势在于支持支持底层平台。
 
-![](images/middle_active.png)
+![](images/3-5.png)
 
 如果服务是基于HTTP，他们可以使用[HTTPS Basic认证](https://en.wikipedia.org/wiki/Basic_access_authentication)。这同样是易于理解和简单的，但是对于管理所有机器SSL证书很复杂，而且反身代理不再对请求做缓存。
 
