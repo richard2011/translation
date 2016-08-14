@@ -97,7 +97,7 @@ Unix哲学[*注7*]和设计已经非常成功，提出几十年后仍然反响�
 
 命令溯源和事件溯源有着不同的语义。例如，重放命令意味着你同样重放着它们所代表副作用；重放事件只是执行状态改变操作，加速服务的状态的变化。根据不同的用户场景来选择最合适的技术。
 
-使用事件日志同样能够避免对象-关系阻抗不匹配（[Object-Relational Impedance Mismatch](https://en.wikipedia.org/wiki/Object-relational_impedance_mismatch)），一个发生在[Object-Relational Mapping, ORM](https://en.wikipedia.org/wiki/Object-relational_mapping)技术的问题。还可以建立消息传递通信的基础，然而这已经是主要通信机制的事实。使用事件日志同样也是微服务最后的存储模型，因为它天生支持异步消息传递通信（请看图2-4）
+使用事件日志同样能够避免对象-关系阻抗不匹配（[Object-Relational Impedance Mismatch](https://en.wikipedia.org/wiki/Object-relational_impedance_mismatch)），一个发生在对象-关系映射（[Object-Relational Mapping, ORM](https://en.wikipedia.org/wiki/Object-relational_mapping)）技术的问题。还可以建立消息传递通信的基础，然而这已经是主要通信机制的事实。使用事件日志同样也是微服务最后的存储模型，因为它天生支持异步消息传递通信（请看图2-4）
 
 ![](images/EventSourcing.png)
 

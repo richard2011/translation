@@ -14,13 +14,13 @@
 
 单机版的微服务很容易设计和实现，基于微服务架构难点在于如何把它们串连起来：服务发现、协调、安全、复制、数据一致性、故障转移、部署、与其他系统集成，这些只是其中的一些。
 
-利用现实
+挖掘现实
 =================
 
 > If you cannot solve a problem without programming. You cannot solve a problem with programming.     
 > -- Klang’s Conjecture by Viktor Klang 
 
-基于微服务架构的优点之一就是给你提供一系列的工具来利用现实，通过模仿世界是如何工作来构建系统，包括所有的约束和因素。
+基于微服务架构的优点之一就是给你提供一系列的工具来挖掘现实，通过模仿世界是如何工作来构建系统，包括所有的约束和因素。
 
 我们已经讨论过的康威定律的重点是，当你们组织结构和部门已经准备好了，微服务开发通常是很适合你们的。
 
@@ -54,7 +54,7 @@ Pat Helland谈论过这个*[注5]*，他用『内部数据』和『外部数据�
 服务之间需解耦和可移动性（`mobile`），系统需要弹性和动态的，这可以通过增加一个中间层来解决，这个模式称之为控制反转（[Inversion of Controller, Ioc](https://en.wikipedia.org/wiki/Inversion_of_control)）。这意味着每个服务实际上应该上报当前地址和连接信息给平台。这称之为服务发现（[Service Discovery](https://www.nginx.com/blog/service-discovery-in-a-microservices-architecture/)）
 ，这也是基于微服务平台的基本部分。
 
-一旦服务的信息已经被持久化，就可以通过一个服务注册（[Service Registry](http://microservices.io/patterns/service-registry.html)）查找到信息，这种模式称为客户端-服务发现（[Client-Side Service Disacovery](http://microservices.io/patterns/client-side-discovery.html)）。另外一个策略需要信息存储和在一个负载均衡器（`load balancer`，像在[AWS Elastic Load Balancer }(https://aws.amazon.com/elasticloadbalancing/)）或者直接在服务地址引用 （使用依赖注入的方式注入），这种模式称为服务端-服务发现。
+一旦服务的信息已经被持久化，就可以通过一个服务注册（[Service Registry](http://microservices.io/patterns/service-registry.html)）查找到信息，这种模式称为客户端-服务发现（[Client-Side Service Disacovery](http://microservices.io/patterns/client-side-discovery.html)）。另外一个策略需要信息存储和在一个负载均衡器（`load balancer`，像在[AWS Elastic Load Balancer ](https://aws.amazon.com/elasticloadbalancing/)）或者直接在服务地址引用 （使用依赖注入的方式注入），这种模式称为服务端-服务发现。
 
 **当我们选择一个服务发现的工具的时候，主要考虑哪些因素？**
 
@@ -72,7 +72,7 @@ API管理
 
 伯斯塔尔法则*[注13]*，也称为鲁棒性原则，描述如下『发送时保守，接收时开放』，对于服务协作中的API设计和升级都是一个很好的指导*[注14]*。
 
-这里的挑战包括协议和数据的版本，还有如何处理协议和数据的升级和降级。这是一个涉及面较大的问题，包括可扩展的序列化编码、协议维护、数据转换层，有时候甚至这个服务本身版本升级*[注15]*，这在DDD中称为『反腐化层，[Anti-Corruption Layer](https://moffdub.wordpress.com/2008/09/21/anatomy-of-an-anti-corruption-layer-part-1/)』，可以追加到服务自己本身或者在API GateWay完成。
+这里的挑战包括协议和数据的版本，还有如何处理协议和数据的升级和降级。这是一个涉及面较大的问题，包括可扩展的序列化编码、协议维护、数据转换层，有时候甚至服务本身版本升级。*[注15]*。这在DDD中称为『隔离层，[Anti-Corruption Layer](https://moffdub.wordpress.com/2008/09/21/anatomy-of-an-anti-corruption-layer-part-1/)』，可以追加到服务自己本身或者在API GateWay完成。
 
 **假如我有这样一个客户端，为了执行一个任务，需要调用十个不同的服务，每个服务都有不同的API。听起来很复杂，我能如何简化API管理？**
 
@@ -84,7 +84,7 @@ API Gateway负责接收客户端的请求，路由到正确的服务（如果需
 
 这模式的优势在于，通过封装服务的内部结构和它们的API，来简化客户端到服务的协议。如果使用一个集中式的方案很难做到高可用和可扩展性的。可以使用非中心化的技术来代替，正如之前提及的服务发现。
 
-但是，这个就像所有核心基础服务一样，不应该开发者自己构建，理想的情况是作为底层平台的一部分。
+就像所有核心基础服务一样，不应该开发者自己构建，理想的情况是作为底层平台的一部分。
 
 通信模式管理
 =====================
@@ -116,7 +116,7 @@ ESB的角色仍然存在的价值，只是现在以一种现代的可扩展性�
 
 第一步，定义一个能在系统高负载或负载非正常增长时，只会产生的最小化危险的协议。如果使用同步协议（甚至只是协议的子集），你会引入了紧耦合，然后你就无能为力，任由其他系统摆布。
 
-避免级联失败，要求服务之间完全解耦和隔离。最好的办法是使用一个全异步的通信协议。相当重要的是，这个协议有一个机制可以容纳大量的流程数据请求，这个称之为[back-pressure](http://www.reactivemanifesto.org/glossary#Back-Pressure)。这个保证为个高性能系统不会因某个慢组件而引起负载过高。越来越多的工具和类库开始拥抱[Reative Streams](http://www.reactive-streams.org)规范（类响应式流的产品包括Akka Streams，[RxJava](https://github.com/ReactiveX/RxJava)，Spark Streaming和Cassandra drivers）。这些使桥接各个系统使用利用实时流来实现全异步得可能（增强交互、可靠性和组合其他系统成一个整体）。
+避免级联失败，要求服务之间完全解耦和隔离。最好的办法是使用一个全异步的通信协议。相当重要的是，这个协议有一个机制可以容纳大量的流程数据请求，这个称之为背压（`[back-pressure](http://www.reactivemanifesto.org/glossary#Back-Pressure)`）。这个保证为个高性能系统不会因某个慢组件而引起负载过高。越来越多的工具和类库开始拥抱[Reative Streams](http://www.reactive-streams.org)规范（类响应式流的产品包括Akka Streams，[RxJava](https://github.com/ReactiveX/RxJava)，Spark Streaming和Cassandra drivers）。这些使桥接各个系统使用利用实时流来实现全异步得可能（增强交互、可靠性和组合其他系统成一个整体）。
 
 对于管理失败服务的方式同样至关重要。如果能捕捉错误，你可以重试。如果错误持续，在一个特定的周期里隔离这些服务，直到服务恢复，这个抽象的方式称为断路器模式（Circuit Breaker pattern*[注17]*，生产环境级别的断路器实现可以参考[Netflix Hystrix](https://github.com/Netflix/Hystrix)和[Akka](http://doc.akka.io/docs/akka/snapshot/common/circuitbreaker.html)）。请看图3-4。
 
@@ -134,7 +134,7 @@ ESB的角色仍然存在的价值，只是现在以一种现代的可扩展性�
 
 有些场景天生的异步但是传统却把它当作同步，包括：库存信息（如果它很热销，库存减小得很快，用户通常需要被通知）；餐馆里的当前菜单（如果它们改变，用户可能想马上知道）；网站的评论（通常是评论完实时显示）；还有广告（马上回应或根据用户如何使用这网页而改变）。
 
-我们需要独立地看待每个用户场景，搞清楚客户端与服务之间用什么方式调用是自然。这通常要求分析数据完整性约束，找机会去弱化一致性（有序）的约束（可以利用因果关系和读已所写*[注19]*），目的是寻找协调约束的最小集合，为用户提供直观的语义：找到利用现实的最好策略。
+我们需要独立地看待每个用户场景，搞清楚客户端与服务之间用什么方式调用是自然。这通常要求分析数据完整性约束，找机会去弱化一致性（有序）的约束（可以利用因果关系和读已所写*[注19]*），目的是寻找协调约束的最小集合，为用户提供直观的语义：找到挖掘现实的最好策略。
 
 安全管理
 =========
@@ -170,7 +170,7 @@ TSL客户端认证（[TLS Client Certificates](https://en.wikipedia.org/wiki/Tra
 
 在传统中，开发者已经使用一个单体架构连接一个SQL数据库，提供一个『全局』的一致性。这个模型很简单是因为它提供了一个『全局』的一致性的『现在』，一个绝对呈现（这个就很直观的原因）。但是就像我们讨论那样，打破这种假设和分解单体系统，被隔离的微服务有很多好处。
 
-你需要开始研究数据然后把它作为一个域来梳理它们的关系，保证和业务完整约束，利用现实(`exploiting reality`)。
+你需要开始研究数据然后把它作为一个域来梳理它们的关系，保证和业务完整约束，挖掘现实(`exploiting reality`)。
 
 这通常包括反范式来处理数据，定义系统的一致性(事务)边界，在内部你可以依靠强一致。然后你应该让这些边界去驱动设计和微服务的范围。尽时减小你设计的服务有数据依赖和关系依赖，有时要完全消除，数据解耦（它意味着当改变的时候，你不需要去协调）。
 
@@ -271,6 +271,6 @@ ACID 2.0[*注22*]这个概念由Pat Helland提出，他还总结一系列可扩�
 
 [注27]. 一般的代表是『[X/Open Distributed Transaction Processing](http://pubs.opengroup.org/onlinepubs/009680699/toc.pdf)』，通常指的是XA。
 
-[注28]. 论文『[SAGAS]()』由Hector Garcia-Molina和Kenneth Salem最初在1987提出。
+[注28]. 论文『[SAGAS](http://www.amundsen.com/downloads/sagas.pdf)』由Hector Garcia-Molina和Kenneth Salem最初在1987提出。
 
 [注29]. 更多信息请查看Peter Bailis et.al的『[Highly Available Transations: Virtues and Limitations](http://www.bailis.org/papers/hat-vldb2014.pdf)』
