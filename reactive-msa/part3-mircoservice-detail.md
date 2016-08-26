@@ -88,19 +88,19 @@ API Gateway负责接收客户端的请求，路由到正确的服务（如果需
 
 通信模式管理
 =====================
-> The Japanese have a small word - ma -for "that which is in between" - perhaps the nearest English equialent is "interstitial". The key in making great and grouwable systems is much more to design how its modules communicate rather than what their interal properties and hehaviors should be.  -- Alan key
+> 日语有个单词叫ma，用于『承前启后』，相当于英文的『interstitial』。构建优秀的可扩展的系统应该专注于如何设计通信模块，而不是它们内部的属性和行为。-- 艾伦·凯（`Alan Kay`，Smalltalk发明人）
 
-**我如何处理大量微服务之间能通信的高复杂度？**
+**如何处理大量微服务之间高复度杂的通信？**
 
-ESB的角色仍然存在的价值，只是现在以一种现代的可扩展性的消息队列。
+ESB的角色依然有存在的价值，只是以一种更现代的可扩展性的消息队列的方式。
 
-如果系统中只有小量的微服务，可以直接P2P（[Point-to-Point](http://www.enterpriseintegrationpatterns.com/PointToPointChannel.html)）通信来完成这任务。然而当微服务数量较大，允许他们当中每个直接和其他通信，构架就会迅速变得难以理解和混乱。 是时候介绍一些约束的规则了！这个需要一个在发送者和接收者之间逻辑解耦，通过预定规则在各给组件之间路由数据。
+如果系统只有小量的微服务，可以直接用P2P（[Point-to-Point](http://www.enterpriseintegrationpatterns.com/PointToPointChannel.html)）来完成通信。然而当微服务数量较大，允许他们当中每个直接和其他通信，构架就会迅速变得难以理解和混乱。 是时候介绍一些约束的规则了！这个需要一个在发送者和接收者之间逻辑解耦，通过预定规则在各服务间路由数据。
 
-其中一个解决方案是使用发布-订阅（[Publish-Subscribe](http://www.enterpriseintegrationpatterns.com/patterns/messaging/PublishSubscribeChannel.html)）机制，发布者可以向一个Topic发布信息，订阅者监听这个Topic。这个可以使用一个可扩展的消息系统（例如Kafak  或者Amazon Kinesis）或者一个NOSQL数据（可以选择AP风格的数据库像Cassandra或Riak）。
+其中一个解决方案是使用发布-订阅（[Publish-Subscribe](http://www.enterpriseintegrationpatterns.com/patterns/messaging/PublishSubscribeChannel.html)）机制，发布者可以向一个Topic发送信息，订阅者监听这个Topic。可以使用一个可扩展的消息系统（例如Kafak  或者Amazon Kinesis）或者一个NOSQL数据（可以选择AP风格的数据库像Cassandra或Riak）。
 
-在SOA世界，这个角色通常由ESB来担任。然而在这种情景我们不再用于单体系统的桥接，而是相当于服务发布系统（`publishing system`）的支柱，用于广播任务或数据，或者系统间集成和通信总线（例如通过[Spark Streaming](http://spark.apache.org/streaming/)摄取数据到[Spakrk](http://spark.apache.org)）。
+在SOA世界，这个角色通常由ESB来担任。然而在这里我们不是用于单体系统间桥接，而是作为服务发布系统（`publishing system`）的支柱，用来广播任务和数据，或者系统间集成和通信总线。例如，通过[Spark Streaming](http://spark.apache.org/streaming/)抽取数据到[Spark](http://spark.apache.org)）。
 
-有时候使用发布-订阅协议也有不足，例如，当你需要更高级的路由（[routing](http://www.enterpriseintegrationpatterns.com/patterns/messaging/MessageRoutingIntro.html)）能力，来允许程序员来自定义多个部分的路由规则，或被用于数据阶段（Stages）转换（`transformation`）、充实（`enrichment`）、拆分（`splitting`）和合并（`merging`）（例如，使用用[Akka Streams](http://doc.akka.io/docs/akka-stream-and-http-experimental/2.0.1/scala/stream-index.html)或者[Apache Camel](://camel.apache.org)）。请看图3-3
+发布-订阅协议也有不足之处，当你需要更高级的路由（[routing](http://www.enterpriseintegrationpatterns.com/patterns/messaging/MessageRoutingIntro.html)），这样程序员可以在多个服务间自定义路由规则。或者需要每个数据阶段（`Stages`）间转换（`transformation`）、增强（`enrichment`）、拆分（`splitting`）和合并（`merging`）（使用[Akka Streams](http://doc.akka.io/docs/akka-stream-and-http-experimental/2.0.1/scala/stream-index.html)或者[Apache Camel](://camel.apache.org)）。请看图3-3
 
 ![](images/datastream.png)
 
@@ -200,7 +200,7 @@ ACID 2.0[*注22*]这个概念由Pat Helland提出，他还总结一系列可扩�
 
 拥抱这个理念的工具是CRDTs，正如它们都是最终一致，丰富的数据结构（包括count,sets,map和even graphs）组合，汇聚不需要协调。更新操作与顺序无关，通常还可以安全地自动合并。CRDTs相当新，但是已经在生产环境实践了好几年，有一些生产环境级别的类库你可以直接使用（例如，Akka和Riak）。
 
-然而，最终一致性有时候是很难实现的，因为它会要求我们放弃很多高层业务语意（`high-level business semantics`）。如果遇到这场景选择因果一致性（[causal consistency](https://en.wikipedia.org/wiki/Causal_consistency)）会是一个很好的权衡。这语意基于人们期望和简单直接的因果关系。好消息是，因果一致性已包含了可扩展性和可用性（甚至还被证实是实现高可用系统的最好方式*[注23]*）。因果一致性通常使用逻辑时刻（`logical time`*[注24]*），也常用于许多NoSQL数据、事件日志存储和分布式日事件流产品（例如Riak和[Red Bull Eventuate](https://rbmhtechnology.github.io/eventuate/)）。
+然而，最终一致性有时候是很难实现的，因为它会要求我们放弃很多高层业务语意（`high-level business semantics`）。如果遇到这场景选择因果一致性（[causal consistency](https://en.wikipedia.org/wiki/Causal_consistency)，译者注：这一种是从开发者/客户端的角度实现的一致性）会是一个很好的权衡。这语意基于人们期望和简单直接的因果关系。好消息是，因果一致性已包含了可扩展性和可用性（甚至还被证实是实现高可用系统的最好方式*[注23]*）。因果一致性通常使用逻辑时钟（`logical time`*[注24]*），也常用于许多NoSQL数据、事件日志存储和分布式日事件流产品（例如Riak和[Red Bull Eventuate](https://rbmhtechnology.github.io/eventuate/)）。
 
 但对于关系型数据库呢？实际上你同样可以漂亮地使用SQL。在他其中一篇论文*[注25]*，Peter Bailis谈论了在怎么样避免在关系型数据库进行协调，列举很多可以避免协调更改的参考SQL操作（例如，不使用事务）。这些操作包括：等于，唯一ID生成，自增，自减，外键插入和删除，二级索引和视图。
 
@@ -210,7 +210,7 @@ ACID 2.0[*注22*]这个概念由Pat Helland提出，他还总结一系列可扩�
 
 在过去，分布式事务*[注27]*已经用于分布式系统作协调更改。它们执行它们的任务，这个对于并发执行有很昂贵的成本。提供一个假设，你只是世界上唯一使用数据，或者每个人只是坐好排队直到你执行完你的更改。这是不正确的，维持这个假设在是相当昂贵的（[extremely costly](https://blog.acolyer.org/2014/11/20/life-beyond-distributed-transactions/)），导致系统变慢，不可扩展和变得脆弱。
 
-对于分布式事务，[Saga模式](https://msdn.microsoft.com/en-us/library/jj591569.aspx)[*注28*]是一个可扩展和弹性的选择方案（请看图3-6）。它是用于管理基于服务发现的长事务的方式，长事务通常组合多个事务步骤，整体一致性的事务可以通过把这些步骤组成整个分布式事务。这个技术是对每一个阶段的事务补偿反向事务，如果其中一个阶段事务失败，整个分布式事务可以回滚（在相反的顺序）。
+对于分布式事务，[Sagas模式](https://msdn.microsoft.com/en-us/library/jj591569.aspx)[*注28*]是一个可扩展和弹性的选择方案（请看图3-6）。它是用于管理基于服务发现的长事务的方式，长事务通常组合多个事务步骤，整体一致性的事务可以通过把这些步骤组成整个分布式事务。这个技术是对每一个阶段的事务补偿反向事务，如果其中一个阶段事务失败，整个分布式事务可以回滚（在相反的顺序）。
 
 ![](images/sagas.png)
 
@@ -253,7 +253,7 @@ ACID 2.0[*注22*]这个概念由Pat Helland提出，他还总结一系列可扩�
 
 [注18]. 定义评估用例的过程已超出了本文的范围。
 
-[注19]. 最终一致性的客户端不同语意的非常好的讨论，包括read-your-writes一致性和因果一致性，具体可以查看Werner Vogels（CTO - Amazon.com）的[Eventually Consistent - Revisited](http://www.allthingsdistributed.com/2008/12/eventually_consistent.html)
+[注19]. 对不同客户端一致性模型非常好的论述，包括读已之所写一致性（`read-your-writes`）和因果（`Casusal consistency`）一致性，具体可以查看Werner Vogels（CTO - Amazon.com）的[Eventually Consistent - Revisited](http://www.allthingsdistributed.com/2008/12/eventually_consistent.html)
 
 [注20]. Quentin Tarantions的『低俗小说』中Mia Wallace的人物性格，同时Peter Bailis在后来也在他优秀的演讲『[Silence is Golden: Coordination-Avoiding System Design](https://speakerdeck.com/pbailis/silence-is-golden-coordination-avoiding-systems-design)』
 
@@ -263,7 +263,7 @@ ACID 2.0[*注22*]这个概念由Pat Helland提出，他还总结一系列可扩�
 
 [注23]. 因果一致性是强一致性，我们可以通过理解Mahajan et al颇具有影响力的论文『[Consistency, Availability, and Covergence](https://blog.acolyer.org/2015/03/17/consistency-availability-and-convergence-cops/)）』，我们可以做到这点。
 
-[注24]. 对于状态协调使用Wall clock time(timestamps)，有时候它应该在分布式系统设计避免，因为它有节点之间时钟协调的问题，时钟歪曲的问题。相反，依靠逻辑时间，它可以提供你一个你可以相信的稳定的时间，即使节点失败，信息丢失等。这个有一些很好的选择，其中一下就是[Vector Clock](https://en.wikipedia.org/wiki/Vector_clock)
+[注24]. 分布式系统设计中处理状态协调应该避免使物理时钟（`Wall Clock Time`，即timestamps），因为它有节点间时钟协调问题和时钟歪曲的问题。相反，可以使用逻辑时钟，它提供了一个可以相信的稳定的时间，即使节点失败，信息丢失等。这方面有一些很好的选择，其中一个就是向量时钟（[Vector Clock](https://en.wikipedia.org/wiki/Vector_clock)）
 
 [注25]. [Peter Bailis](http://www.bailis.org)是一个斯坦福大学的助理教授，也是世界级的分布式和数据系统的专家。这扩展论文主要指的是『[Coordination Avoidance in Database Systems](http://www.bailis.org/papers/ca-vldb2015.pdf)』
 
