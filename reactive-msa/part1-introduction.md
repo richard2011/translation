@@ -75,5 +75,5 @@ Reactive原则不是一种新的思维。它们应该被证实和久经沙场超
 [注1]. 译者注：monolithic 中文翻译纠结了好久，曾经想过单机版、庞然大物、集中式、巨无霸、最后译作单体。     
 [注2]. 在这文档中微服务和服务两个概念是相通的。他们都指的是响应式服务。     
 [注3].『[SOA已死，服务永存](http://apsblog.burtongroup.com/2009/01/soa-is-dead-long-live-services.html)』出自Anne Thomas, Gartner公司的副总裁和著名的分析师。    
-[注4].『Reactive宣言』地址在[www.reactivemanifesto.org](www.reactivemanifesto.org)。如你没有访问过，推荐你阅读一下因为这本书是依靠Reactive原则作为基础。    
-[注5]. [Fault Tolerance in Tandem Computer Systems](http://www.hpl.hp.com/techreports/tandem/TR-86.2.pdf)
+[注4].『响应式宣言』地址在[www.reactivemanifesto.org](www.reactivemanifesto.org)。如你没有访问过，推荐你阅读一下因为这本书是依靠Reactive原则作为基础。    
+[注5]. [串联系统的容错性](http://www.hpl.hp.com/techreports/tandem/TR-86.2.pdf)

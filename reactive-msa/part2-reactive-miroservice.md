@@ -69,25 +69,25 @@ Unix哲学[*注7*]和设计已经非常成功，提出几十年后仍然反响�
 不共享状态
 ========================
 
-> 没有隐私，一个独立个体就没有意义。 --- Jonathan Franzen
+> 没有隐私，一个独立个体就没有意义。 --- Jonathan Franzen(强纳森·法兰森，美国小说家和散文家)
 
-到目前为止，我们把微服务作为一系列离服务，每个都有单独一项职责。这种形式可以把服务作为一个单独的单元，它们的生命周期都被隔离（可弹性的先决条件），移动可以隔离（可扩展性的先决条件）。
+到目前为止，我们把微服务作为一系列离服务，每个都单一的职责。这种形式可以把服务作为一个独立的单元，它们的生命周期都被隔离（韧性的先决条件），隔离后可随时移动（可扩展性的先决条件）。
 
 虽然这一切听起来很好，但我们忘记房间里的『大象』：状态。
 
-微服务通常是有状态的实体：它们包括状态和行为，类似的方式是[Object](https://en.wikipedia.org/wiki/Object-oriented_programming)或者[Actor](https://en.wikipedia.org/wiki/Actor_model)，相互之间通过申请状态和请求来隔离，这要求你把状态和行为作为一个独立单元。
+微服务通常是有状态的实体(`stateful enitity`)：它们包括状态和行为，类似的方式是[Object](https://en.wikipedia.org/wiki/Object-oriented_programming)或者[Actor](https://en.wikipedia.org/wiki/Actor_model)，隔离肯定适用于状态，这要求你把状态和行为作为一个独立单元。
 
-不幸的，有种架构忽略这点名为『无状态』，『无状态』的风格把服务的状态推向一个大型共享的数据库，就像很多Web框架那样，不会帮你解决太多你要想的东西，只会把问题委托给第三方，并且难以控制，包括保证数据完整性、扩展性和可用性保证。
+不幸的是，有种架构忽略这点，并称之为『无状态』，『无状态』的风格把服务的状态推向一个大型共享的数据库，就像很多web框架那样，不会解决太多你要想的东西，只会把问题委托给第三方，并且难以控制，包括保证数据完整性、扩展性和可用性保证。(请看图2-3)
 
 ![](images/disguisedmonolith.png)
 
-我们需要每个微服务都负责自己的状态和持久化。把每个服务就当作一个界限上下文[*注9*]是很有用的，因为每个服务都定义它自己的域，每个都有自己的通用语言。这些技术都来自领域驱动设计（[Domain-Driven Design，DDD](https://en.wikipedia.org/wiki/Domain-driven_design)）[*注10*]模型构建工具。学习DDD一个很好的起点，DDD对微服务有着深远的影响，许多在微服务里听到的词语都来源于DDD。
+我们需要每个微服务都负责自己的状态和持久化。把每个服务作为一个界限上下文（`Bounded Context`）[*注9*]是很有用的，因为每个服务都定义它自己的域，每个都有自己的通用语言。这些技术都来自领域驱动设计（[Domain-Driven Design，DDD](https://en.wikipedia.org/wiki/Domain-driven_design)）[*注10*]模型构建工具。学习DDD一个很好的起点，DDD对微服务有着深远的影响，许多在微服务里听到的词语都来源于DDD。
 
-与其他微服通信应该通过限界上下文，你只能友好地请求一下它的状态（你不能强迫它暴露它的内部）。每个服务它会自己响应请求，从它的当前状态衍生的不变数据（事实），从来不会直接暴露它的可变状态。
+与其他微服通信应该通过限界上下文，你只能友好地询问一下它的状态（你不能强迫它暴露内部）。每个服务会自己响应请求，从当前状态衍生的不变数据（事实），从来不会直接暴露它的可变状态。
 
-每个服务可以自由地使用任何方式来展示它的状态，选择合适的格式化或半格式化的存储系统。有些服务可能会选择一个在传统的关系数据库管理系统（[RDBMS](https://en.wikipedia.org/wiki/Relational_database_management_system)），如Oracle、Mysql和Postgres。有些是[NosSQL](http://nosql-database.org)数据库（如[Cassandra](http://cassandra.apache.org)和[Riak](http://basho.com/products/)），有些是时序（[Time-Series](https://en.wikipedia.org/wiki/Time_series_database)）数据库（如[InfluxDB](https://influxdata.com)和[OpenTSDB](http://opentsdb.net)），有些使用Event Log[*注11*]（很好的后端支持包括[Kafka](http://kafka.apache.org)，[Amazon Kinesis](https://aws.amazon.com/kinesis)和Cassandra），来实现Event Souring[*注12*] 和 命令与查询职责分离（CQRS）。
+每个服务可以自由地使用任何方式来展示它的状态，选择合适的格式化或半格式化的存储系统。有时候服务可能会选择一个在传统的关系数据库管理系统（[RDBMS](https://en.wikipedia.org/wiki/Relational_database_management_system)），如Oracle、Mysql和Postgres。有时候是[NosSQL](http://nosql-database.org)数据库（如[Cassandra](http://cassandra.apache.org)和[Riak](http://basho.com/products/)），有时候是时序数据库（[Time-Series](https://en.wikipedia.org/wiki/Time_series_database)）（如[InfluxDB](https://influxdata.com)和[OpenTSDB](http://opentsdb.net)），有时候使用Event Log[*注11*]（很好的后端支持包括[Kafka](http://kafka.apache.org)，[Amazon Kinesis](https://aws.amazon.com/kinesis)和Cassandra），来实现Event Souring[*注12*] 和 命令与查询职责分离（CQRS）。
 
-非集中式的数据管理和持久化有很多好处，有时候称为*混合持久化*。从概念上，用哪个存储中间件并不重要，最重要的是服务能够看作是一个独立的单元，包括状态和行为，每个服务都有自己的状态，非共享的。这包括每个服务不能直接访问另一个服务的持久化存储，只能通过API。有时候很难给程序自动强制的，因此需要通过会议、规则和代码审查来完成。
+非集中式的数据管理和持久化有很多好处，有时候称为*混合持久化*（`Polyglot Persistence`）。从概念上，使用哪个存储中间件并不重要，最重要的是服务能够看作是一个独立的单元，包括状态和行为，每个服务都有自己的状态，非共享的。这包括每个服务不能直接访问另一个服务的持久化存储，只能通过API。有时候很难给程序自动强制的，因此需要通过会议、规则和代码审查来完成。
 
 *事件日志（`Event Log`）* 是消息的持久化存储。我们可以选择当外部消息进入服务的时候存储，服务的命令（`Commands`），一般称之为*命令溯源*。我们同样可以选择忽略命令，让它执行服务的副作用（`side-effect`），如果副作用触发一个服务里的状态改变，然后我们把这状态改变看作事件（`Event`）里一个新的事实，这个会存储在事件日志里，这时使用事件溯源。
 
